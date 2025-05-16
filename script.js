@@ -34,8 +34,7 @@ generateButton.addEventListener("click", () => {
         signalResult.innerHTML = signalDetails;
         signalTime.textContent = now;
 
-        // 🔒 Кулдаун 30 секунд
-        let cooldown = 30;
+        let cooldown = 15;
         generateButton.disabled = true;
         const originalText = translations[language].generateButton;
 
