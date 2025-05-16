@@ -5,38 +5,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let signalUpdateTimeout = null;
 
-    generateButton.addEventListener("click", () => {
-        generateButton.disabled = true;
-        generateButton.textContent = "Waiting...";
-        console.log("Button clicked, generating signal...");
+generateButton.addEventListener("click", () => {
+    generateButton.disabled = true;
+    generateButton.textContent = "Waiting...";
+    console.log("Button clicked, generating signal...");
 
-        if (signalUpdateTimeout) clearTimeout(signalUpdateTimeout);
+    if (signalUpdateTimeout) clearTimeout(signalUpdateTimeout);
 
-        signalUpdateTimeout = setTimeout(() => {
-            generateButton.disabled = false;
-            generateButton.textContent = "Get signal";
+    signalUpdateTimeout = setTimeout(() => {
+        const currencyPair = document.getElementById("currency-pair").value;
+        const timeframeText = document.getElementById("timeframe").value;
 
-            const currencyPair = document.getElementById("currency-pair").value;
-            const timeframeText = document.getElementById("timeframe").value;
+        const isBuy = Math.random() > 0.5;
+        const accuracy = (Math.random() * 10 + 85).toFixed(2);
+        const now = new Date().toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 
-            const isBuy = Math.random() > 0.5;
-            const accuracy = (Math.random() * 10 + 85).toFixed(2);
-            const now = new Date().toLocaleTimeString("en-EN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-
-            const language = document.getElementById("language").value;
-            const signalDetails = `
-                <div class="signal-details">
-                    <div class="signal-pair">${currencyPair}</div>
-                    <div class="signal-direction ${isBuy ? "green" : "red"}">
-                        ${isBuy ? translations[language].buy : translations[language].sell}
-                    </div>
-                    <div class="signal-timeframe">${translations[language].timeframe}: ${timeframeText}</div>
-                    <div class="signal-probability">${translations[language].accuracy}: ${accuracy}%</div>
+        const language = document.getElementById("language").value;
+        const signalDetails = `
+            <div class="signal-details">
+                <div class="signal-pair">${currencyPair}</div>
+                <div class="signal-direction ${isBuy ? "green" : "red"}">
+                    ${isBuy ? translations[language].buy : translations[language].sell}
                 </div>
-            `;
-            signalResult.innerHTML = signalDetails;
-            signalTime.textContent = now;
+                <div class="signal-timeframe">${translations[language].timeframe}: ${timeframeText}</div>
+                <div class="signal-probability">${translations[language].accuracy}: ${accuracy}%</div>
+            </div>
+        `;
+        signalResult.innerHTML = signalDetails;
+        signalTime.textContent = now;
+
+        // 🔒 Кулдаун 30 секунд
+        let cooldown = 30;
+        generateButton.disabled = true;
+        const originalText = translations[language].generateButton;
+
+        const cooldownInterval = setInterval(() => {
+            generateButton.textContent = `${originalText} (${cooldown}s)`;
+            cooldown--;
+            if (cooldown < 0) {
+                clearInterval(cooldownInterval);
+                generateButton.disabled = false;
+                generateButton.textContent = originalText;
+            }
         }, 1000);
+    }, 1000);
     });    
 });
 
