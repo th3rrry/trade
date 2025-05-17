@@ -75,25 +75,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function startCooldown(pair) {
     const generateButton = document.getElementById("generate-btn");
-    const language = document.getElementById("language").value;
-    const originalText = translations[language].generateButton;
 
     function updateCooldown() {
         const now = Date.now();
         const remaining = Math.ceil((cooldowns[pair].endTime - now) / 1000);
+        const language = document.getElementById("language").value;
+        const baseText = translations[language].generateButton;
 
         if (remaining <= 0) {
             clearInterval(cooldowns[pair].intervalId);
             generateButton.disabled = false;
-            generateButton.textContent = originalText;
+            generateButton.textContent = baseText;
             delete cooldowns[pair];
         } else {
             generateButton.disabled = true;
-            generateButton.textContent = `${originalText} (${remaining}s)`;
+            generateButton.textContent = `${baseText} (${remaining}s)`;
         }
     }
 
-    updateCooldown(); 
+    updateCooldown();
     cooldowns[pair].intervalId = setInterval(updateCooldown, 1000);
 }
 
